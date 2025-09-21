@@ -35,8 +35,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/user/signin", "/register", "/css/**", "/js/**"
                                         ).permitAll()
-//                        .requestMatchers("/appointments","/timeslots/*","/book").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
-                        .requestMatchers("/appointments","/timeslots/*","/book/**").permitAll()
+//                        .requestMatchers("/appointments","/timeslots/*","/book","/my-bookings").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
+                        .requestMatchers("/appointments","/timeslots/*","/book/**","/my-bookings").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )    .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/book")
+                        .ignoringRequestMatchers("/book","/cancel-booking")
                 );
 
         return http.build();

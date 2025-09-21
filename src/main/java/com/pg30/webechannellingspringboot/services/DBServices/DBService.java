@@ -1,6 +1,7 @@
 package com.pg30.webechannellingspringboot.services.DBServices;
 
 import com.pg30.webechannellingspringboot.DTOs.DoctorDTO;
+import com.pg30.webechannellingspringboot.DTOs.MyBookingDTO;
 import com.pg30.webechannellingspringboot.DTOs.TimeSlotDTO;
 import com.pg30.webechannellingspringboot.database.repositories.BookingRepository;
 import com.pg30.webechannellingspringboot.database.repositories.DoctorRepository;
@@ -24,7 +25,8 @@ public class DBService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
 
-    public DBService(DoctorRepository doctorRepository, TimeSlotRepository timeSlotRepository, BookingRepository bookingRepository,UserRepository userRepository) {
+    public DBService(DoctorRepository doctorRepository, TimeSlotRepository timeSlotRepository,
+                     BookingRepository bookingRepository, UserRepository userRepository) {
         this.doctorRepository = doctorRepository;
         this.timeSlotRepository = timeSlotRepository;
         this.bookingRepository = bookingRepository;
@@ -83,17 +85,27 @@ public class DBService {
 
     public Integer getPatientIdByUsername(String username) {
         Optional<UserEntity> user = userRepository.findByEmail(username);
-        if (user.isPresent()) {
-            return user.get().getUserId();
-        }
-        return null;
+        return user.map(UserEntity::getUserId).orElse(null);
     }
-
 
     public BookingEntity saveBooking(Long slotId, Long patientId) {
         BookingEntity booking = new BookingEntity();
         booking.setSlotId(slotId);
         booking.setPatientId(patientId);
         return bookingRepository.save(booking);
+    }
+
+
+    public List<MyBookingDTO> getBookingsByPatientId(Long patientId) {
+        return bookingRepository.findBookingsByPatient(patientId);
+    }
+
+    public boolean cancelBooking(Long bookingId) {
+        Optional<BookingEntity> bookingOpt = bookingRepository.findById(bookingId);
+        if (bookingOpt.isPresent()) {
+            bookingRepository.deleteById(bookingId);
+            return true;
+        }
+        return false;
     }
 }

@@ -1,10 +1,12 @@
 package com.pg30.webechannellingspringboot.controllers;
 
 import com.pg30.webechannellingspringboot.DTOs.DoctorDTO;
+import com.pg30.webechannellingspringboot.DTOs.MyBookingDTO;
 import com.pg30.webechannellingspringboot.DTOs.TimeSlotDTO;
 import com.pg30.webechannellingspringboot.entities.BookingEntity;
 import com.pg30.webechannellingspringboot.services.DBServices.DBService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -44,7 +46,6 @@ public class AppointmentBookingController {
         model.addAttribute("doctors", doctors);
         return "appointment";
     }
-
 
     @RequestMapping(value = "/timeslots/{id}", method = RequestMethod.GET)
     public String showTimeSlots(@PathVariable("id") Long doctorId, Model model) {
@@ -93,7 +94,44 @@ public class AppointmentBookingController {
     }
 
 
+    @RequestMapping(value = "/my-bookings", method = RequestMethod.GET)
+    public String myBookings(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : null;
 
+        logger.info("Loading bookings for user: " + username);
 
+        Integer patientId = dbService.getPatientIdByUsername(username);
 
+        List<MyBookingDTO> bookings = dbService.getBookingsByPatientId(patientId.longValue());
+
+        bookings.forEach(booking -> {
+            logger.info("Booking ID: " + booking.getBookingId());
+            logger.info("Doctor: " + booking.getDoctorName());
+            logger.info("Specialization: " + booking.getSpecialization());
+            logger.info("Fee: " + booking.getFee());
+            logger.info("Slot Date: " + booking.getSlotDate());
+            logger.info("Start Time: " + booking.getStartTime());
+            logger.info("Created At: " + booking.getCreatedAt());
+            logger.info("-------------------------------");
+        });
+
+        model.addAttribute("bookings", bookings);
+
+        return "my-bookings";
+    }
+
+    @RequestMapping(value = "/cancel-booking", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> cancelBooking(@RequestParam Long bookingId) {
+        Map<String, Object> response = new HashMap<>();
+        boolean success = dbService.cancelBooking(bookingId);
+        if (success) {
+            response.put("success", true);
+            response.put("message", "Booking cancelled successfully.");
+        } else {
+            response.put("success", false);
+            response.put("message", "Booking not found or could not be cancelled.");
+        }
+        return ResponseEntity.ok(response);
+    }
 }
