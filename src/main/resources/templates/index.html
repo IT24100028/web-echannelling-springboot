@@ -221,15 +221,20 @@
                         <li><a class="dropdown-item" href="doctor-signup.html">Register</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
+
+                <!-- Visible only for unauthenticated users -->
+                <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/user/signin}">Sign In</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/user/signup}">Sign Up</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="admin-panel.html">Admin</a>
                 </li>
+
+                <!-- Visible only for authenticated users -->
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form th:action="@{/logout}" method="post" style="display: inline;">
                         <button type="submit" class="btn btn-link nav-link" style="padding: 0; border: none; background: none;">
