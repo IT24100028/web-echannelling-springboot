@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +27,7 @@
                     <a class="nav-link" href="/appointments" th:href="@{/appointments}">Appointments</a>
                 </li>
             </ul>
-            <ul class="navbar-nav">
+            <ul class="navbar-nav" sec:authorize="isAuthenticated()">
                 <li class="nav-item"><a class="nav-link" href="/signin" th:href="@{/signin}">Sign In</a></li>
                 <li class="nav-item"><a class="nav-link" href="/signup" th:href="@{/signup}">Sign Up</a></li>
             </ul>

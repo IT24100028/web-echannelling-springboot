@@ -28,6 +28,27 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlotEntity, Long> 
             @Param("now") LocalDateTime now
     );
 
+    // 1. Get all doctor slots, ordered by date+time
+    @Query(value = "SELECT * FROM dbo.time_slots ts " +
+            "WHERE ts.doctor_id = :doctorId " +
+            "ORDER BY ts.slot_date ASC, ts.start_time ASC",
+            nativeQuery = true)
+    List<TimeSlotEntity> findByDoctorIdOrderByDateTime(@Param("doctorId") Long doctorId);
+
+    // 2. Count overlaps safely (DATE + TIME → DATETIME)
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM dbo.time_slots ts " +
+            "WHERE ts.doctor_id = :doctorId " +
+            "AND ts.slot_date = :date " +
+            "AND (CAST(:startTime AS DATETIME) < CAST(ts.end_time AS DATETIME) " +
+            "     AND CAST(:endTime AS DATETIME) > CAST(ts.start_time AS DATETIME))",
+            nativeQuery = true)
+    long countOverlaps(@Param("doctorId") Long doctorId,
+                       @Param("date") LocalDate date,
+                       @Param("startTime") LocalTime startTime,
+                       @Param("endTime") LocalTime endTime);
+
+
 }
 
 

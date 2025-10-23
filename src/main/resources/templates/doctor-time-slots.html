@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Doctor Time Slots</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/style.css" />
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+		<div class="container">
+			<a class="navbar-brand fw-bold text-primary" th:href="@{/}">E-Channeling</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto">
+					<li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+					<li class="nav-item"><a class="nav-link active" th:href="@{/doctor/slots}">My Slots</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<section class="py-4">
+		<div class="container">
+			<div class="row g-4">
+				<div class="col-12">
+					<div class="card border-0 shadow-sm">
+						<div class="card-body">
+							<div class="d-flex align-items-center justify-content-between mb-3">
+								<h1 class="h4 mb-0">Manage Time Slots</h1>
+								<span id="form-msg" class="text-danger small"></span>
+							</div>
+							<form id="slot-form" class="row gy-3 gx-3 align-items-end">
+								<div class="col-md-3">
+									<label class="form-label">Date</label>
+									<input type="date" class="form-control" name="date" required>
+								</div>
+								<div class="col-md-2">
+									<label class="form-label">Start</label>
+									<input type="time" class="form-control" name="startTime" required>
+								</div>
+								<div class="col-md-2">
+									<label class="form-label">End</label>
+									<input type="time" class="form-control" name="endTime" required>
+								</div>
+								<div class="col-md-2">
+									<label class="form-label">Max patients</label>
+									<input type="number" class="form-control" name="maxPatients" min="1" value="1" required>
+								</div>
+								<div class="col-md-3 d-grid">
+									<button type="submit" class="btn btn-primary">
+										Add Slot
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-12">
+					<div class="card border-0 shadow-sm">
+						<div class="card-body">
+							<div class="d-flex align-items-center justify-content-between mb-3">
+								<h2 class="h5 mb-0">Your Slots</h2>
+								<div class="text-muted small">Edit inline and click Save</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table align-middle">
+									<thead class="table-light">
+										<tr>
+											<th>Date</th>
+											<th>Start</th>
+											<th>End</th>
+											<th>Max</th>
+											<th>Booked</th>
+											<th class="text-end">Actions</th>
+										</tr>
+									</thead>
+									<tbody id="slots-body"></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+		async function fetchSlots() {
+		const res = await fetch('/api/doctor/slots', {
+			credentials: 'include'
+		});
+		const data = await res.json();
+		const tbody = document.getElementById('slots-body');
+		tbody.innerHTML = '';
+		data.forEach(s => {
+			const tr = document.createElement('tr');
+			tr.innerHTML = `
+			  <td style="min-width: 160px;"><input class=\"form-control\" type=\"date\" value=\"${s.slotDate}\" data-field=\"date\"></td>
+			  <td style="min-width: 140px;"><input class=\"form-control\" type=\"time\" value=\"${s.startTime}\" data-field=\"startTime\"></td>
+			  <td style="min-width: 140px;"><input class=\"form-control\" type=\"time\" value=\"${s.endTime || ''}\" data-field=\"endTime\"></td>
+			  <td style="min-width: 120px;"><input class=\"form-control\" type=\"number\" min=\"1\" value=\"${s.maxPatients || 1}\" data-field=\"maxPatients\"></td>
+			  <td>${s.bookingCount ?? 0}</td>
+			  <td class=\"text-end\">
+				<button class=\"btn btn-sm btn-outline-primary me-2\" data-action=\"update\" data-id=\"${s.id}\">Save</button>
+				<button class=\"btn btn-sm btn-outline-danger\" data-action=\"delete\" data-id=\"${s.id}\">Delete</button>
+			  </td>
+			`;
+			tbody.appendChild(tr);
+		  });
+	}
+
+	document.getElementById('slot-form').addEventListener('submit', async (e) => {
+		e.preventDefault();
+		const fd = new FormData(e.target);
+		const params = new URLSearchParams(fd);
+		const msg = document.getElementById('form-msg');
+		msg.textContent = '';
+
+		const res = await fetch('/api/doctor/slots', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				[csrfHeader]: csrfToken
+			},
+			body: params,
+			credentials: 'include'
+		});
+
+		const data = await res.json();
+		if (data.success) {
+			e.target.reset();
+			await fetchSlots();
+		} else {
+			msg.textContent = data.message || 'Failed to add slot';
+		}
+	});
+
+
+		document.getElementById('slots-body').addEventListener('click', async (e) => {
+			const btn = e.target.closest('button');
+			if (!btn) return;
+
+			const action = btn.getAttribute('data-action');
+			const id = btn.getAttribute('data-id');
+			const tr = btn.closest('tr');
+
+			if (action === 'update') {
+				const date = tr.querySelector('input[data-field="date"]').value;
+				const startTime = tr.querySelector('input[data-field="startTime"]').value;
+				const endTime = tr.querySelector('input[data-field="endTime"]').value;
+				const maxPatients = tr.querySelector('input[data-field="maxPatients"]').value;
+				const params = new URLSearchParams({ date, startTime, endTime, maxPatients });
+
+				const res = await fetch(`/api/doctor/slots/${id}`, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+						[csrfHeader]: csrfToken
+					},
+					body: params,
+					credentials: 'include'
+				});
+
+				const data = await res.json();
+				if (!data.success) { alert(data.message || 'Update failed'); }
+				await fetchSlots();
+
+			} else if (action === 'delete') {
+				if (!confirm('Delete this slot?')) return;
+
+				const res = await fetch(`/api/doctor/slots/${id}`, {
+					method: 'DELETE',
+					headers: {
+						[csrfHeader]: csrfToken
+					},
+					credentials: 'include'
+				});
+
+				const data = await res.json();
+				if (!data.success) { alert(data.message || 'Delete failed'); }
+				await fetchSlots();
+			}
+		});
+
+
+	(function init() {
+		const dateInput = document.querySelector('#slot-form input[name="date"]');
+		if (dateInput) {
+			const d = new Date();
+			d.setDate(d.getDate() + 1);
+			dateInput.value = d.toISOString().split('T')[0];
+		}
+		fetchSlots();
+	})();
+	</script>
+</body>
+</html>
+
+

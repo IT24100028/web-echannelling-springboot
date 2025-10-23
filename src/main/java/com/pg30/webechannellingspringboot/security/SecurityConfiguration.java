@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @EnableWebSecurity
 @Configuration
@@ -36,13 +37,14 @@ public class SecurityConfiguration {
                         .requestMatchers("/","/user/signin", "/user/signup", "/css/**", "/js/**"
                                         ).permitAll()
 //                        .requestMatchers("/appointments","/timeslots/*","/book","/my-bookings").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
-                        .requestMatchers("/appointments","/timeslots/*","/book/**","/my-bookings").permitAll()
+                        .requestMatchers("/appointments","/timeslots/*","/book/**","/my-bookings","/doctor/signup","/doctor/login").permitAll()
+                        .requestMatchers("/doctor/slots","/api/doctor/**", "/api/doctor/slots/**","/api/doctor/slots", "/doctor/dashboard", "/doctor/api/profile","/doctor/signup").hasAnyRole("DOCTOR","ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/user/signin")
                         .loginProcessingUrl("/user/signin")
-                        .defaultSuccessUrl("/user/indexMY", true)
+                        .successHandler(roleBasedAuthenticationSuccessHandler())
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -50,9 +52,13 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )    .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/book","/cancel-booking")
+                        .ignoringRequestMatchers("/book","/cancel-booking","/doctor/signup","/doctor/api/**")
                 );
 
         return http.build();
+    }
+    @Bean
+    public AuthenticationSuccessHandler roleBasedAuthenticationSuccessHandler() {
+        return new RoleBasedAuthenticationSuccessHandler();
     }
 }

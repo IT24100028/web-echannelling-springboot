@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     @Transactional
     @Query("DELETE FROM UserEntity u WHERE u.email = :email")
     void deleteByEmail(@Param("email") String email);
+
+    Optional<UserEntity> findByPhone(String phone);
 }
