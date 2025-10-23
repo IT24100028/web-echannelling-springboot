@@ -26,13 +26,13 @@ public class DoctorController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    // Doctor signup page
+
     @GetMapping("/signup")
     public String doctorSignupPage() {
         return "doctor-signup";
     }
 
-    // Doctor login page
+
     @GetMapping("/login")
     public String doctorLoginPage() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -43,7 +43,6 @@ public class DoctorController {
         return "doctor-login";
     }
 
-    // Doctor dashboard/profile page
     @GetMapping("/dashboard")
     public String doctorDashboard(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -53,7 +52,6 @@ public class DoctorController {
             return "redirect:/doctor/login";
         }
 
-        // Get doctor profile
         Long doctorId = dbService.getDoctorIdByUsername(username);
         if (doctorId == null) {
             return "redirect:/doctor/login";
@@ -67,7 +65,6 @@ public class DoctorController {
         return "doctor-dashboard";
     }
 
-    // Handle doctor signup
     @PostMapping("/signup")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> doctorSignup(@RequestParam("firstName") String firstName,
@@ -80,21 +77,18 @@ public class DoctorController {
         Map<String, Object> response = new HashMap<>();
         
         try {
-            // Check if email already exists
             if (dbService.userExistsByEmail(email)) {
                 response.put("success", false);
                 response.put("message", "Email already registered. Please use a different email.");
                 return ResponseEntity.badRequest().body(response);
             }
 
-            // Check if phone already exists
             if (dbService.userExistsByPhone(phone)) {
                 response.put("success", false);
                 response.put("message", "Phone number already registered. Please use a different phone number.");
                 return ResponseEntity.badRequest().body(response);
             }
 
-            // Create user entity
             UserEntity user = new UserEntity();
             user.setFirstName(firstName);
             user.setLastName(lastName);
@@ -103,16 +97,13 @@ public class DoctorController {
             user.setPassword(passwordEncoder.encode(password));
             user.setRole("DOCTOR");
 
-            // Save user
             UserEntity savedUser = dbService.saveUser(user);
 
-            // Create doctor entity
             DoctorEntity doctor = new DoctorEntity();
             doctor.setUser(savedUser);
             doctor.setSpecialization(specialty);
             doctor.setFee(fee != null ? fee : BigDecimal.ZERO);
 
-            // Save doctor
             DoctorEntity savedDoctor = dbService.saveDoctor(doctor);
 
             response.put("success", true);
@@ -129,7 +120,6 @@ public class DoctorController {
         }
     }
 
-    // Get doctor profile
     @GetMapping("/api/profile")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getDoctorProfile() {
@@ -159,7 +149,6 @@ public class DoctorController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            // Create response object without sensitive data
             Map<String, Object> doctorData = new HashMap<>();
             doctorData.put("doctorId", doctor.getDoctorId());
             doctorData.put("firstName", doctor.getUser().getFirstName());
@@ -181,7 +170,6 @@ public class DoctorController {
         }
     }
 
-    // Update doctor profile
     @PutMapping("/api/profile")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateDoctorProfile(@RequestParam("firstName") String firstName,
@@ -208,7 +196,6 @@ public class DoctorController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            // Update doctor profile
             boolean updated = dbService.updateDoctorProfile(doctorId, firstName, lastName, phone, specialization, fee);
             
             if (updated) {
@@ -228,7 +215,6 @@ public class DoctorController {
         }
     }
 
-    // Delete doctor account
     @DeleteMapping("/api/profile")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteDoctorAccount() {
@@ -251,7 +237,6 @@ public class DoctorController {
                 return ResponseEntity.badRequest().body(response);
             }
 
-            // Delete doctor account
             boolean deleted = dbService.deleteDoctorAccount(doctorId);
             
             if (deleted) {

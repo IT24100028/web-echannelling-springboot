@@ -48,14 +48,12 @@ public class DoctorTimeSlotController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication != null ? authentication.getName() : null;
             
-            // Check if user has proper role (DOCTOR or ADMIN)
             if (username == null) {
                 res.put("success", false);
                 res.put("message", "Authentication required");
                 return ResponseEntity.status(401).body(res);
             }
             
-            // Get user role to verify permissions
             String userRole = dbService.getUserRoleByUsername(username);
             if (userRole == null || (!userRole.equals("DOCTOR") && !userRole.equals("ADMIN"))) {
                 res.put("success", false);
@@ -63,8 +61,6 @@ public class DoctorTimeSlotController {
                 return ResponseEntity.status(403).body(res);
             }
             
-            // For admins, they can create slots for any doctor, but for now we'll use their own doctor ID if they have one
-            // For doctors, use their own doctor ID
             Long doctorId = dbService.getDoctorIdByUsername(username);
             if (doctorId == null) {
                 res.put("success", false);
@@ -96,14 +92,12 @@ public class DoctorTimeSlotController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication != null ? authentication.getName() : null;
             
-            // Check if user has proper role (DOCTOR or ADMIN)
             if (username == null) {
                 res.put("success", false);
                 res.put("message", "Authentication required");
                 return ResponseEntity.status(401).body(res);
             }
             
-            // Get user role to verify permissions
             String userRole = dbService.getUserRoleByUsername(username);
             if (userRole == null || (!userRole.equals("DOCTOR") && !userRole.equals("ADMIN"))) {
                 res.put("success", false);
@@ -137,14 +131,12 @@ public class DoctorTimeSlotController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication != null ? authentication.getName() : null;
             
-            // Check if user has proper role (DOCTOR or ADMIN)
             if (username == null) {
                 res.put("success", false);
                 res.put("message", "Authentication required");
                 return ResponseEntity.status(401).body(res);
             }
             
-            // Get user role to verify permissions
             String userRole = dbService.getUserRoleByUsername(username);
             if (userRole == null || (!userRole.equals("DOCTOR") && !userRole.equals("ADMIN"))) {
                 res.put("success", false);

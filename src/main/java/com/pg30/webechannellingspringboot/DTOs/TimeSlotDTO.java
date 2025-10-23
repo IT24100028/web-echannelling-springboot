@@ -16,7 +16,6 @@ public class TimeSlotDTO {
         this.bookingCount = 0L; // default 0
     }
 
-    // new constructor with booking count
     public TimeSlotDTO(Long id, LocalDate slotDate, LocalTime startTime, Long bookingCount) {
         this.id = id;
         this.slotDate = slotDate;

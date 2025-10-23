@@ -33,7 +33,6 @@ public class ReportController {
 
     Logger logger = Logger.getLogger("info");
 
-    // Doctor upload report form
     @GetMapping("/doctor/report")
     public String showUploadForm(Model model) {
         model.addAttribute("report", new Report());
@@ -83,21 +82,18 @@ public class ReportController {
     }
 
     
-    // Patient view reports
     @GetMapping("/patient/reports")
     public String viewReports(Model model) {
         model.addAttribute("listReports", service.listAll());
         return "view_reports";
     }
     
-    // Admin view all reports
     @GetMapping("/admin/reports")
     public String adminViewReports(Model model) {
         model.addAttribute("listReports", service.listAll());
         return "admin_reports";
     }
     
-    // Download report file
     @GetMapping("/report/download/{id}")
     public ResponseEntity<Resource> downloadReport(@PathVariable Long id) {
         try {
@@ -122,7 +118,6 @@ public class ReportController {
         }
     }
     
-    // Admin delete report
     @GetMapping("/admin/reports/delete/{id}")
     public String deleteReport(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {

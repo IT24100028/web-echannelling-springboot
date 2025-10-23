@@ -19,14 +19,12 @@ public class FeedbackController {
     @Autowired
     private FeedbackService service;
     
-    // User feedback form
     @GetMapping("/feedback")
     public String showForm(Model model) {
         model.addAttribute("feedback", new Feedback());
         return "feedback_form";
     }
     
-    // Save feedback
     @PostMapping("/feedback/save")
     public String saveFeedback(@Valid @ModelAttribute Feedback feedback, 
                               BindingResult result, 
@@ -39,14 +37,12 @@ public class FeedbackController {
         return "redirect:/feedback?success";
     }
     
-    // Admin view all feedback
     @GetMapping("/admin/feedback")
     public String viewAllFeedback(Model model) {
         model.addAttribute("listFeedback", service.listAll());
         return "admin_feedback";
     }
     
-    // Admin edit feedback
     @GetMapping("/admin/feedback/edit/{id}")
     public String editFeedback(@PathVariable Long id, Model model) {
         Feedback feedback = service.get(id);
@@ -54,7 +50,6 @@ public class FeedbackController {
         return "edit_feedback";
     }
     
-    // Admin update feedback
     @PostMapping("/admin/feedback/update")
     public String updateFeedback(@Valid @ModelAttribute Feedback feedback, 
                                 BindingResult result,
@@ -67,7 +62,6 @@ public class FeedbackController {
         return "redirect:/admin/feedback";
     }
     
-    // Admin delete feedback
     @GetMapping("/admin/feedback/delete/{id}")
     public String deleteFeedback(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         service.delete(id);

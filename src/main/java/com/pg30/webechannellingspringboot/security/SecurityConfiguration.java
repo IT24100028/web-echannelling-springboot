@@ -65,7 +65,7 @@ public class SecurityConfiguration {
                                 "/cancel-booking",
                                 "/doctor/signup",
                                 "/doctor/api/**",
-                                "/doctor/report/save"    // <-- add this
+                                "/doctor/report/save"
                         )
 
                 );

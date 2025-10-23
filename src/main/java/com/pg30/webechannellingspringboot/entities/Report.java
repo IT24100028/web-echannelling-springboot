@@ -33,7 +33,6 @@ public class Report {
     @Column(name = "upload_date")
     private LocalDateTime uploadDate;
     
-    // Constructors
     public Report() {
         this.uploadDate = LocalDateTime.now();
     }
@@ -47,7 +46,6 @@ public class Report {
         this.uploadDate = LocalDateTime.now();
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

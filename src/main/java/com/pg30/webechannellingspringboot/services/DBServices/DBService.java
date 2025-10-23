@@ -113,7 +113,6 @@ public class DBService {
         return user.map(UserEntity::getRole).orElse(null);
     }
 
-    // User management methods
     public boolean userExistsByEmail(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
@@ -162,9 +161,7 @@ public class DBService {
 
             UserEntity user = doctor.getUser();
 
-            // Delete doctor first (due to foreign key constraint)
             doctorRepository.delete(doctor);
-            // Then delete user
             userRepository.delete(user);
 
             return true;
@@ -173,10 +170,6 @@ public class DBService {
         }
     }
 
-    /**
-     * Ensures there is a Doctor row for the given username. If missing, creates a minimal doctor
-     * profile with default specialization and zero fee so the user can manage time slots.
-     */
     public Long ensureDoctorIdByUsername(String username) {
         if (username == null) return null;
         Optional<UserEntity> userOpt = userRepository.findByEmail(username);
@@ -226,7 +219,6 @@ public class DBService {
         if (!existing.getDoctorId().equals(doctorId)) {
             throw new IllegalArgumentException("Unauthorized update");
         }
-        // exclude current slot from overlap: temporarily remove by adjusting check if times changed
         String error = null;
         if (!existing.getSlotDate().equals(date) || !existing.getStartTime().equals(startTime) || !existing.getEndTime().equals(endTime)) {
             error = validateNoOverlap(doctorId, date, startTime, endTime);

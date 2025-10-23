@@ -3,6 +3,7 @@ package com.pg30.webechannellingspringboot.controllers;
 import com.pg30.webechannellingspringboot.DTOs.UserDTO;
 import com.pg30.webechannellingspringboot.database.repositories.UserRepository;
 import com.pg30.webechannellingspringboot.entities.UserEntity;
+import com.pg30.webechannellingspringboot.patterns.UserFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +25,9 @@ public class UserController {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private UserFactory userFactory;
 
     @RequestMapping(value = "/signin",method = RequestMethod.GET)
     public String userLogin() {
@@ -59,17 +63,9 @@ public class UserController {
                 return "redirect:/user/signup";
             }
 
-            UserEntity newUser = new UserEntity();
-            newUser.setFirstName(firstName);
-            newUser.setLastName(lastName);
-            newUser.setEmail(email);
-            newUser.setPhone(phone);
-            newUser.setDob(dob);
-            newUser.setGender(gender);
-            newUser.setAddress(address);
-            newUser.setPassword(passwordEncoder.encode(password));
-            newUser.setRole("PATIENT");
-            newUser.setCreatedAt(java.time.LocalDateTime.now());
+            UserEntity newUser = userFactory.createPatient(
+                firstName, lastName, email, phone, dob, gender, address, password
+            );
 
             userRepository.save(newUser);
             redirectAttributes.addFlashAttribute("success", "Account created successfully! You can now sign in.");

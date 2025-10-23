@@ -14,7 +14,6 @@ public class UserDTO {
     private String role;
     private LocalDateTime createdAt;
 
-    // Constructors
     public UserDTO() {}
 
     public UserDTO(Integer userId, String firstName, String lastName, String email,
@@ -32,7 +31,6 @@ public class UserDTO {
         this.createdAt = createdAt;
     }
 
-    // Getters and Setters
     public Integer getUserId() { return userId; }
     public void setUserId(Integer userId) { this.userId = userId; }
 

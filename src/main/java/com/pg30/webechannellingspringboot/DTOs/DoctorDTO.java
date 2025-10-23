@@ -11,7 +11,6 @@ public class DoctorDTO {
     private String specialization;
     private BigDecimal fee;
 
-    // Constructors
     public DoctorDTO() {}
 
     public DoctorDTO(Long doctorId, String fullName, String email, String phone, String specialization, BigDecimal fee) {
@@ -23,7 +22,6 @@ public class DoctorDTO {
         this.fee = fee;
     }
 
-    // Getters and Setters
     public Long getDoctorId() { return doctorId; }
     public void setDoctorId(Long doctorId) { this.doctorId = doctorId; }
 

@@ -27,7 +27,6 @@ public class Feedback {
     @Size(min = 10, max = 500, message = "Comment must be between 10 and 500 characters")
     private String comment;
     
-    // Constructors
     public Feedback() {
     }
     
@@ -38,7 +37,6 @@ public class Feedback {
         this.comment = comment;
     }
     
-    // Getters and Setters
     public Long getId() {
         return id;
     }

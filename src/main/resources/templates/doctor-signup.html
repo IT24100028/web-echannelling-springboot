@@ -231,7 +231,7 @@
                 if (data.success) {
                     showAlert('Doctor account created successfully!', 'success');
                     setTimeout(() => {
-                        window.location.href = '/doctor/login';
+                        window.location.href = '/user/signin';
                     }, 1500);
                 } else {
                     showAlert(data.message || 'Failed to create account', 'danger');
