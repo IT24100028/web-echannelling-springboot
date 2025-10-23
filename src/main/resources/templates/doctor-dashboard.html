@@ -1,0 +1,477 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard - E-Channeling System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2A6CCB;
+            --primary-light: #E8F1FD;
+            --secondary: #4CAF50;
+            --dark: #2D3748;
+            --light: #F8FAFC;
+            --gray: #718096;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            background-color: var(--light);
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 0.8rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary-light);
+            color: var(--primary) !important;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 0.8rem 1.8rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: #1E5AB5;
+            border-color: #1E5AB5;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            border-width: 2px;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+            transform: translateY(-2px);
+        }
+
+        .profile-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #1E5AB5 100%);
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stats-card .icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .stats-card .icon i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 0.75rem 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(42,108,203,.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="fas fa-stethoscope me-2"></i>E-Channeling
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/doctor/dashboard}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/doctor/slots}">Manage Time Slots</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="fas fa-sign-out-alt me-1"></i>Sign Out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2" id="doctorName">Dr. Loading...</h1>
+                    <p class="mb-1" id="doctorSpecialization">Loading...</p>
+                    <p class="mb-0" id="doctorEmail">Loading...</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <button class="btn btn-light me-2" onclick="editProfile()">
+                        <i class="fas fa-edit me-1"></i>Edit Profile
+                    </button>
+                    <button class="btn btn-outline-light" onclick="deleteAccount()">
+                        <i class="fas fa-trash me-1"></i>Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h4 class="mb-1" id="totalSlots">0</h4>
+                    <p class="text-muted mb-0">Total Time Slots</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="icon">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                    <h4 class="mb-1" id="totalBookings">0</h4>
+                    <p class="text-muted mb-0">Total Bookings</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h4 class="mb-1" id="consultationFee">$0</h4>
+                    <p class="text-muted mb-0">Consultation Fee</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4 class="mb-1">4.8</h4>
+                    <p class="text-muted mb-0">Rating</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-clock me-2 text-primary"></i>Time Slot Management
+                        </h5>
+                        <p class="card-text">Manage your available time slots for patient appointments.</p>
+                        <a th:href="@{/doctor/slots}" class="btn btn-primary">
+                            <i class="fas fa-calendar-plus me-1"></i>Manage Time Slots
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-user-edit me-2 text-primary"></i>Profile Settings
+                        </h5>
+                        <p class="card-text">Update your personal information and professional details.</p>
+                        <button class="btn btn-outline-primary" onclick="editProfile()">
+                            <i class="fas fa-edit me-1"></i>Edit Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editFirstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="editFirstName" name="firstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editLastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="editLastName" name="lastName" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="editPhone" name="phone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSpecialization" class="form-label">Specialization</label>
+                            <select class="form-select" id="editSpecialization" name="specialization" required>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="Dermatology">Dermatology</option>
+                                <option value="Oncology">Oncology</option>
+                                <option value="Psychiatry">Psychiatry</option>
+                                <option value="General Medicine">General Medicine</option>
+                                <option value="Emergency Medicine">Emergency Medicine</option>
+                                <option value="Radiology">Radiology</option>
+                                <option value="Surgery">Surgery</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editFee" class="form-label">Consultation Fee (USD)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="editFee" name="fee" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning!</strong> This action cannot be undone. All your data, including time slots and patient bookings, will be permanently deleted.
+                    </div>
+                    <p>Are you sure you want to delete your account?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteAccount()">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let doctorProfile = null;
+
+        // Load doctor profile on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDoctorProfile();
+        });
+
+        function loadDoctorProfile() {
+            fetch('/doctor/api/profile')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        doctorProfile = data.doctor;
+                        updateProfileDisplay();
+                    } else {
+                        showAlert('Failed to load profile: ' + data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('An error occurred while loading profile', 'danger');
+                });
+        }
+
+        function updateProfileDisplay() {
+            if (doctorProfile) {
+                document.getElementById('doctorName').textContent = `Dr. ${doctorProfile.firstName} ${doctorProfile.lastName}`;
+                document.getElementById('doctorSpecialization').textContent = doctorProfile.specialization;
+                document.getElementById('doctorEmail').textContent = doctorProfile.email;
+                document.getElementById('consultationFee').textContent = `$${doctorProfile.fee}`;
+            }
+        }
+
+        function editProfile() {
+            if (doctorProfile) {
+                document.getElementById('editFirstName').value = doctorProfile.firstName;
+                document.getElementById('editLastName').value = doctorProfile.lastName;
+                document.getElementById('editPhone').value = doctorProfile.phone;
+                document.getElementById('editSpecialization').value = doctorProfile.specialization;
+                document.getElementById('editFee').value = doctorProfile.fee;
+                
+                const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+                modal.show();
+            }
+        }
+
+        function saveProfile() {
+            const form = document.getElementById('editProfileForm');
+            const formData = new FormData(form);
+            
+            const params = new URLSearchParams();
+            for (let [key, value] of formData.entries()) {
+                params.append(key, value);
+            }
+
+            fetch('/doctor/api/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                credentials: 'include',
+                body: params
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Profile updated successfully!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('editProfileModal')).hide();
+                    loadDoctorProfile(); // Reload profile
+                } else {
+                    showAlert('Failed to update profile: ' + data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while updating profile', 'danger');
+            });
+        }
+
+        function deleteAccount() {
+            const modal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
+            modal.show();
+        }
+
+        function confirmDeleteAccount() {
+            fetch('/doctor/api/profile', {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Account deleted successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                } else {
+                    showAlert('Failed to delete account: ' + data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while deleting account', 'danger');
+            });
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

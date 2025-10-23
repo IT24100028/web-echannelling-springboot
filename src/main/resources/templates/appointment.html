@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,23 +98,22 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link active" href="appointment.html">Appointments</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/}">Home</a></li>
+                <li class="nav-item"> <a class="nav-link" th:href="@{/appointments}">Appointments</a></li>
             </ul>
-            <ul class="navbar-nav">
+            <ul class="navbar-nav" sec:authorize="isAnonymous()">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                         <i class="fas fa-user-md me-1"></i>Doctors
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="doctor-login.html">Login</a></li>
-                        <li><a class="dropdown-item" href="doctor-signup.html">Register</a></li>
+                        <li><a class="dropdown-item" th:href="@{/user/signin}">Login</a></li>
+                        <li><a class="dropdown-item" th:href="@{/doctor/signup}">Register</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="signin.html">Sign In</a></li>
-                <li class="nav-item"><a class="nav-link" href="signup.html">Sign Up</a></li>
-                <li class="nav-item"><a class="nav-link" href="admin-panel.html">Admin</a></li>
-                <li class="nav-item"><a class="nav-link" href="#" onclick="signOut()">Sign Out</a></li>
+                <li class="nav-item"><a class="nav-link" href="signin.html" sec:authorize="isAnonymous()">Sign In</a></li>
+                <li class="nav-item"><a class="nav-link" href="signup.html" sec:authorize="isAnonymous()">Sign Up</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="signOut()" sec:authorize="isAuthenticated()">Sign Out</a></li>
             </ul>
         </div>
     </div>

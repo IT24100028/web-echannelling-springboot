@@ -14,4 +14,6 @@ public interface DoctorRepository extends JpaRepository<DoctorEntity, Long> {
             "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(d.specialization) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<DoctorEntity> searchDoctors(@Param("keyword") String keyword);
+
+    DoctorEntity findByUser_UserId(Long userId);
 }

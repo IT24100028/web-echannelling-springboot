@@ -20,6 +20,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
             "WHERE b.patientId = :patientId " +
             "ORDER BY b.createdAt DESC")
     List<MyBookingDTO> findBookingsByPatient(@Param("patientId") Long patientId);
+    long countBySlotId(Long slotId);
 
 }
 
