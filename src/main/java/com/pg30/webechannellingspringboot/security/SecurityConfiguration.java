@@ -35,10 +35,18 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/","/user/signin", "/user/signup", "/css/**", "/js/**"
-                                        ).permitAll()
+                                        ,"/feedback/**","/admin/feedback","/admin/feedback/**","/doctor/report").permitAll()
 //                        .requestMatchers("/appointments","/timeslots/*","/book","/my-bookings").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
                         .requestMatchers("/appointments","/timeslots/*","/book/**","/my-bookings","/doctor/signup","/doctor/login").permitAll()
                         .requestMatchers("/doctor/slots","/api/doctor/**", "/api/doctor/slots/**","/api/doctor/slots", "/doctor/dashboard", "/doctor/api/profile","/doctor/signup").hasAnyRole("DOCTOR","ADMIN")
+                                .requestMatchers(
+                                        "/doctor/report",
+                                        "/doctor/report/save",
+                                        "/patient/reports",
+                                        "/admin/reports",
+                                        "/report/download/**",
+                                        "/admin/reports/delete/**"
+                                ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -52,7 +60,14 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )    .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/book","/cancel-booking","/doctor/signup","/doctor/api/**")
+                        .ignoringRequestMatchers(
+                                "/book",
+                                "/cancel-booking",
+                                "/doctor/signup",
+                                "/doctor/api/**",
+                                "/doctor/report/save"    // <-- add this
+                        )
+
                 );
 
         return http.build();
