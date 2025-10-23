@@ -37,11 +37,11 @@ public class AppointmentBookingController {
             doctors = dbService.searchDoctors(query);
         }
 
-        for (DoctorDTO doctor : doctors) {
-            logger.info("Doctor Found: " + doctor.getFullName() + " | " +
-                    doctor.getSpecialization() + " | " +
-                    doctor.getEmail() + " | Fee: " + doctor.getFee());
-        }
+//        for (DoctorDTO doctor : doctors) {
+//            logger.info("Doctor Found: " + doctor.getFullName() + " | " +
+//                    doctor.getSpecialization() + " | " +
+//                    doctor.getEmail() + " | Fee: " + doctor.getFee());
+//        }
 
         model.addAttribute("doctors", doctors);
         return "appointment";
@@ -105,16 +105,16 @@ public class AppointmentBookingController {
 
         List<MyBookingDTO> bookings = dbService.getBookingsByPatientId(patientId.longValue());
 
-        bookings.forEach(booking -> {
-            logger.info("Booking ID: " + booking.getBookingId());
-            logger.info("Doctor: " + booking.getDoctorName());
-            logger.info("Specialization: " + booking.getSpecialization());
-            logger.info("Fee: " + booking.getFee());
-            logger.info("Slot Date: " + booking.getSlotDate());
-            logger.info("Start Time: " + booking.getStartTime());
-            logger.info("Created At: " + booking.getCreatedAt());
-            logger.info("-------------------------------");
-        });
+//        bookings.forEach(booking -> {
+//            logger.info("Booking ID: " + booking.getBookingId());
+//            logger.info("Doctor: " + booking.getDoctorName());
+//            logger.info("Specialization: " + booking.getSpecialization());
+//            logger.info("Fee: " + booking.getFee());
+//            logger.info("Slot Date: " + booking.getSlotDate());
+//            logger.info("Start Time: " + booking.getStartTime());
+//            logger.info("Created At: " + booking.getCreatedAt());
+//            logger.info("-------------------------------");
+//        });
 
         model.addAttribute("bookings", bookings);
 

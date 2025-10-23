@@ -35,15 +35,26 @@ public class UserEntity {
     @Column(name = "created_at", columnDefinition = "DATETIME2")
     private LocalDateTime createdAt;
 
+    @Column(name = "date_of_birth")
+    private String Dob;
+
+    @Column(name = "gender",length = 10)
+    private String gender;
+
+    @Column(name = "address", columnDefinition = "TEXT")
+    private String address;
 
     public UserEntity() {}
 
-    public UserEntity(String firstName, String lastName, String email, String password, String phone, String role) {
+    public UserEntity(String firstName, String lastName, String email, String password, String phone,String  dateOfBirth, String gender, String address, String role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.phone = phone;
+        this.Dob=dateOfBirth;
+        this.setGender(gender);
+        this.setAddress(address);
         this.role = role;
         this.createdAt = LocalDateTime.now();
     }
@@ -72,4 +83,14 @@ public class UserEntity {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getDob() { return Dob; }
+    public void setDob(String Dob) { this.Dob = Dob; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+
 }

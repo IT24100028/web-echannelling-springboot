@@ -33,7 +33,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/user/signin", "/register", "/css/**", "/js/**"
+                        .requestMatchers("/","/user/signin", "/user/signup", "/css/**", "/js/**"
                                         ).permitAll()
 //                        .requestMatchers("/appointments","/timeslots/*","/book","/my-bookings").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
                         .requestMatchers("/appointments","/timeslots/*","/book/**","/my-bookings").permitAll()
@@ -42,7 +42,7 @@ public class SecurityConfiguration {
                 .formLogin(form -> form
                         .loginPage("/user/signin")
                         .loginProcessingUrl("/user/signin")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/user/indexMY", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
